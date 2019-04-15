@@ -116,6 +116,24 @@ if ! shopt -oq posix; then
   fi
 fi
 
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+parse_superuser() {
+    if [ $(id -u) == "0" ]; then
+        #echo $'\u226B'
+        echo $'\u2446'
+    else
+        echo $'\u2440'
+    fi
+}
+
+export PS1="\[$(tput bold)\]\[\033[38;5;15m\][\[\033[38;5;33m\]\u\[\033[38;5;15m\]@\[\033[38;5;10m\]\H\[\033[38;5;15m\]:\[\033[38;5;33m\]\w\[\033[38;5;15m\]]\$(parse_git_branch)\[\033[38;5;15m\]\[$(tput bold)\]\n\$(parse_superuser) \[$(tput sgr0)\]"
+
 export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch gpg-agent
+
+export PATH="$PATH:"/opt/microchip/xc16/v1.36/bin""
+alias scons3="/usr/bin/env python3 $(which scons)"
